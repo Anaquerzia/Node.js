@@ -21,17 +21,41 @@ import { url } from 'node:inspector'
 //POST/users = criar um usuario
 
 
+//aplicação stateful != aplicação stateless
+// stateful = os dados são armazenados localmente, se para de funcionar perde tudo 
+//stateless = não tem memoria porque salva em dispositivos externos, se para de funcionar os dados se materão salvos.
+
+
+//** convertendo arry em strings ***/
+//JSON = JavaScript Object Notation
+//JSON é um formato de dados que é legivel por humanos e facil de ser lido e escrito por maquinas
+// Vamos usar o Json para converter array em string e vice versa 
+// JSON.stringify() = converte um objeto ou valor em uma string JSON
+// JSON.parse() = converte uma string JSON em um objeto ou valor JavaScript
+
+
+//** Criando um servidor http ***/
+
+const users =[]
+
 const server = http.createServer((req, res) => {
    const{method, url }= req
 
    if(method === 'GET' && url === '/users'){
-      return res.end('Listagem de usuarios')
+         return res
+         .setHeader('Content-Type', 'application/json')
+         .end(JSON.stringify(users))
    }
 
    if(method ==='POST' && url === '/users'){
-      return res.end('Usuario criado com sucesso')
+        users.push({
+         id:1,
+         nome: 'Ana',
+         email: 'ana@getMaxListeners.com',
+      })
+      return res.writeHead(201).end()
    }
-   return res.end('Hello Wordl ')
+   return res.writeHead(404).end()
 }) 
 
 server.listen(3333)

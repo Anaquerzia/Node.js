@@ -1,6 +1,6 @@
 {
   "name": "p01",
-  "type": "module", // Esse type a gente coloca para poder importar os módulos sem precisar colocar a extensão .js, na 1° linha do arquivo
+  "type": "module", 
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
