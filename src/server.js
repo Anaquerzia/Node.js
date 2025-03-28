@@ -38,20 +38,46 @@ import { url } from 'node:inspector'
 
 const users =[]
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async(req, res) => {
    const{method, url }= req
 
-   if(method === 'GET' && url === '/users'){
+   const buffers = []
+    
+   for await(const chunk of req){
+        buffers.push(chunk)
+    
+    }
+
+    //Nesta parte estamos usando o JSON.parse para converter a string em um objeto, 
+    // e por isso consigo acesar o body.nome e body.email que vão me retornar somente o nome ou o email do objeto, 
+    // criado la no insimonio
+
+
+   try{
+      req.body =JSON.parse(Buffer.concat(buffers).toString())
+   }catch{
+      req.body = null
+   }
+   
+   //se der somente console.log(body) ele vai me retornar o objeto inteiro , todos os campos do objeto 
+   //console.log(body)
+
+
+//Metdo de listagem
+if(method === 'GET' && url === '/users'){
          return res
          .setHeader('Content-Type', 'application/json')
          .end(JSON.stringify(users))
    }
-
-   if(method ==='POST' && url === '/users'){
-        users.push({
+//Metodo de criação 
+if(method ==='POST' && url === '/users'){
+      //esta linha esta me dizendo que const é uma função a constante body vai receber o nome e o email do objeto
+      const { name, email} = req.body
+      
+      users.push({
          id:1,
-         nome: 'Ana',
-         email: 'ana@getMaxListeners.com',
+         name, 
+         email, 
       })
       return res.writeHead(201).end()
    }
