@@ -1,29 +1,12 @@
-import http from 'node:http'
-import { url } from 'node:inspector'
-
-// -criar usuarios 
-// -listagem de usuarios
-// -Edição de usuarios
-// -Remoção de usuarios
-
-// - Requisições em http temos :
-//     Metodos http
-//     url
-// As rotas serão a soma do metodo + a url
-    
-// - GET: Buscar informações do back-end
-// - POST: Criar uma informação no back-end  
-// - PUT: Alterar uma informação no back-end
-// - PATCH: Alterar uma informação no back-end
-// - DELETE: Deletar uma informação no back-end 
-         //Rotas 
-//GET/users = buscar usuarios
-//POST/users = criar um usuario
+import http from 'node:http';
+//import { json } from 'node:stream/consumers';
+import { json } from './middlewares/json.js'; // Corrigido hoje dia 31/03
+import { Database } from './middlewares/database.js'; // Corrigido o caminho relativo
 
 
-//aplicação stateful != aplicação stateless
-// stateful = os dados são armazenados localmente, se para de funcionar perde tudo 
-//stateless = não tem memoria porque salva em dispositivos externos, se para de funcionar os dados se materão salvos.
+
+//const users =[]
+const database =  new Database()
 
 
 //** convertendo arry em strings ***/
@@ -37,46 +20,29 @@ import { url } from 'node:inspector'
  //** Criando um servidor http ***/
 
 const server = http.createServer(async(req, res) => {
-   const{method, url }= req
-
-   const buffers = []
-    
-   for await(const chunk of req){
-        buffers.push(chunk)
-    
-    }
-
-    //Nesta parte estamos usando o JSON.parse para converter a string em um objeto, 
-    // e por isso consigo acesar o body.nome e body.email que vão me retornar somente o nome ou o email do objeto, 
-    // criado la no insimonio
-
-
-   try{
-      req.body =JSON.parse(Buffer.concat(buffers).toString())
-   }catch{
-      req.body = null
-   }
-   
-   //se der somente console.log(body) ele vai me retornar o objeto inteiro , todos os campos do objeto 
-   //console.log(body)
-
+   const{method, url }= req;
+ 
+   await json(req, res); // Processa o JSON antes de usar req.body
+ 
 
 //Metdo de listagem
 if(method === 'GET' && url === '/users'){
-         return res
-         .setHeader('Content-Type', 'application/json')
-         .end(JSON.stringify(users))
+   const users = database.select('users')
+   
+   return res.end(JSON.stringify(users))
    }
 //Metodo de criação 
 if(method ==='POST' && url === '/users'){
       //esta linha esta me dizendo que const é uma função a constante body vai receber o nome e o email do objeto
       const { name , email }  = req.body
       
-      users.push({
-         id:1,
+      const user = {
+         id: 2,
          name, 
-         email, 
-      })
+         email
+      } 
+      database.insert('users', user)
+
       return res.writeHead(201).end()
    }
    return res.writeHead(404).end()
