@@ -1,7 +1,7 @@
 import http from 'node:http';
 //import { json } from 'node:stream/consumers';
 import { json } from './middlewares/json.js'; // Corrigido hoje dia 31/03
-import { Database } from './middlewares/database.js'; // Corrigido o caminho relativo
+import { Database } from './database.js'; // Corrigido o caminho relativo
 
 
 
