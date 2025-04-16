@@ -2,7 +2,7 @@ import http from 'node:http';
 //import { json } from 'node:stream/consumers';
 import { json } from './middlewares/json.js'; // Corrigido hoje dia 31/03
 import { Database } from './database.js'; // Corrigido o caminho relativo
-
+import { randomUUID } from 'node:crypto';
 
 
 //const users =[]
@@ -37,7 +37,7 @@ if(method ==='POST' && url === '/users'){
       const { name , email }  = req.body
       
       const user = {
-         id: 2,
+         id: randomUUID(),
          name, 
          email
       } 
